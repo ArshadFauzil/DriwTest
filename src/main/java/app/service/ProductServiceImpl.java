@@ -14,4 +14,9 @@ public class ProductServiceImpl implements ProductService{
     public List<Product> findAll() {
         return productDao.findAll();
     }
+
+    @Override
+    public List<Product> findRelevantProducts(List<Integer> pids) {
+        return productDao.findRelevantProducts(pids);
+    }
 }

@@ -1,22 +1,9 @@
 package app.dao;
-import app.dao.ProductDao;
 import app.model.Product;
 import app.mapper.ProductRowMapper;
 import java.util.List;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import org.springframework.stereotype.Repository;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.dao.DataAccessException;
-import org.springframework.jdbc.core.PreparedStatementCallback;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 
 @Repository
 public class ProductDaoImpl implements ProductDao {
@@ -26,6 +13,25 @@ public class ProductDaoImpl implements ProductDao {
     }
 
     public List<Product> findAll() {
-        return template.query("select * from Product", new ProductRowMapper());
+        return template.query("SELECT * FROM Product", new ProductRowMapper());
+    }
+
+    public List<Product> findRelevantProducts(List<Integer> pids) {
+        String array = listToString(pids);
+        String query = "SELECT * FROM Product WHERE pid IN (" + array +") ";
+        return template.query(query, new ProductRowMapper());
+    }
+
+    private String listToString(List<Integer> list)
+    {
+        Object[] array = list.toArray();
+        StringBuilder buffer = new StringBuilder();
+        buffer.append(array[0]);
+        for (int i = 1; i < array.length; i++)
+        {
+            buffer.append(",");
+            buffer.append(array[i]);
+        }
+        return buffer.toString();
     }
 }

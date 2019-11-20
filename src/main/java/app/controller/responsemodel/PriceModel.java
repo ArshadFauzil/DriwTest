@@ -1,5 +1,8 @@
 package app.controller.responsemodel;
 
-public class PriceModel {
+import java.util.List;
 
+public class PriceModel {
+    public List<SelectedProductDetails> selectedProduct;
+    public float totalPrice;
 }

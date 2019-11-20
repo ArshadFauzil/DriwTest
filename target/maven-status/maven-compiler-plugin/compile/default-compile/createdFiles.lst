@@ -1,10 +1,11 @@
-app\controller\requestmodel\SelectedProductList.class
 app\mapper\ProductRowMapper.class
 app\controller\HelloWorld.class
 app\controller\PriceController.class
+app\controller\requestmodel\SelectedProduct.class
 app\controller\responsemodel\PriceModel.class
 app\dao\ProductDao.class
 app\service\ProductServiceImpl.class
+app\controller\responsemodel\SelectedProductDetails.class
 app\Application.class
 app\service\ProductService.class
 app\dao\ProductDaoImpl.class
