@@ -36,13 +36,18 @@
   <button type="button" class="btn btn-success" v-on:click="priceChecker()">Check Price</button>
   <div v-if="response && response.data">
     <h3>Your Cart</h3>
-    <div v-for="(prod, j) in response.data.selectedProduct" :key="j">
-      <h4>{{prod.name}}</h4>
-      <h5>Price per unit {{prod.pricePerUnit}}</h5>
-      <h5>Quantity {{prod.quantity}}</h5>
-      <h5>Cartons {{prod.cartons}}</h5>
-      <h5>Units {{prod.units}}</h5>
-    </div>
+    <div v-for="(prod, j) in response.data.selectedProduct" :key="j" class="card" style="width: 18rem;">
+      <div class="card-header">
+        {{prod.name}}
+      </div>
+      <div class="card-body">
+        <h6 class="card-text">Quantity {{prod.quantity}}</h6>
+        <p class="card-text">Price per unit {{prod.pricePerUnit}}</p>
+        <p class="card-text">Cartons {{prod.cartons}}</p>
+        <p class="card-text">Units {{prod.units}}</p>
+        <p class="card-text">Total product Price {{prod.totalProductPrice}}</p>
+      </div>
+  </div>
     <h4>Total Price {{response.data.totalPrice}}</h4>
   </div>
     <script type="text/x-template" id="grid-template"></script>
@@ -74,7 +79,6 @@ export default {
       .get('http://localhost:9090/products')
       .then(function (response) {
           currentObj.products = response.data
-          console.log(response)
           if(currentObj.products.length > 0) {
             currentObj.products.forEach(element => {
               element.inCartons = true
@@ -95,11 +99,10 @@ export default {
           })
         }
       });
-      console.log(this.selectedProducts)
       if(this.selectedProducts.length > 0) {
         axios.post('http://localhost:9090/prices', this.selectedProducts)
             .then(response => ( this.response = response ))
-      }
+      } else { this.response = null; }
     }
   }
 }
@@ -107,7 +110,20 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.black_box {
+    width:500px;
+    height:200px;
+    background:#fff;
+    float:left;
+    border:1px solid #000;
+    outline: 1px dashed #fff;
+    outline-offset: -10px;
+}
+
 h3 {
+  margin: 40px 0 0;
+}
+.btn-success {
   margin: 40px 0 0;
 }
 ul {

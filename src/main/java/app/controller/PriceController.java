@@ -57,9 +57,10 @@ public class PriceController {
             prod.cartons = inCartons ? (prod.quantity / product.getcartonSize()) : 0;
             prod.units = inCartons ? (prod.quantity % product.getcartonSize()) : prod.quantity;
             productDetails.add(prod);
-            totalPrice += ((prod.cartons > MINIMUM_DISCOUNTED_CARTON_COUNT ? prod.cartons * product.getcartonSize() * prod.pricePerUnit * DISCOUNTED_PRICE :
+            prod.totalProductPrice = ((prod.cartons > MINIMUM_DISCOUNTED_CARTON_COUNT ? prod.cartons * product.getcartonSize() * prod.pricePerUnit * DISCOUNTED_PRICE :
                                                                              prod.cartons * product.getcartonSize() * prod.pricePerUnit)
                         + (prod.units * prod.pricePerUnit * UNIT_PRICE_INCREMENT));
+            totalPrice += prod.totalProductPrice;
         }
         PriceModel responseModel = new PriceModel();
         responseModel.selectedProduct = productDetails;
