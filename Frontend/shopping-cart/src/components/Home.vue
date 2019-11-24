@@ -1,6 +1,6 @@
 <template>
   <div class="hello">
-    <h1>{{ msg }}</h1>
+    <h1>Welcome to the Shopping Cart! Browse for your products here</h1>
   <div class="align-center">
      <table>
         <thead>
@@ -14,9 +14,6 @@
           <tr v-for="(entry, j) in products" :key="j">
             <td v-for="(key, h) in columns" :key="h">
               {{entry[key]}}
-            </td>
-            <td>
-              <vue-numeric-input :min="0" v-model="entry.quantity" @change="onChange()"></vue-numeric-input>
             </td>
           </tr>
         </tbody>
@@ -37,7 +34,6 @@ export default {
   name: 'Home',
   data: function () {
     return {
-      msg: "Welcome to the Shopping Cart! Browse for your products here",
       columns: ['name', 'price', 'cartonSize'],
       products: null,
       titleDictionary: {"name": "Name", "price": "Price per Unit", "cartonSize": "Units per Carton"},
@@ -48,11 +44,6 @@ export default {
     axios
       .get('http://localhost:9090/products')
       .then(response => (this.products = response.data))
-  },
-  methods: {
-    onChange: function () {
-      console.log(this.products)
-    }
   }
 }
 </script>

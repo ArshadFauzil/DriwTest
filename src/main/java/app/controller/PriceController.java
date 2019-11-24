@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -29,9 +30,13 @@ public class PriceController {
         return productService.findAll();
     }
 
+    @CrossOrigin
     @RequestMapping("/prices")
     @ResponseBody
     public PriceModel getPriceBreakDown(@RequestBody List<SelectedProduct> selectedProductList) {
+        if (selectedProductList.isEmpty()){
+            return null;
+        }
         List<Integer> pids = new ArrayList<Integer>();
         for (SelectedProduct selectedProduct: selectedProductList) {
             pids.add(selectedProduct.pid);
@@ -43,12 +48,14 @@ public class PriceController {
             SelectedProductDetails prod = new SelectedProductDetails();
             prod.name = product.getName();
             prod.pricePerUnit = product.getPrice();
-            prod.quantity = Objects.requireNonNull(selectedProductList.stream()
+            SelectedProduct p = Objects.requireNonNull(selectedProductList.stream()
                     .filter(x -> x.pid == product.getPid())
                     .findAny()
-                    .orElse(null)).quantity;
-            prod.cartons = prod.quantity / product.getcartonSize();
-            prod.units = prod.quantity % product.getcartonSize();
+                    .orElse(null));
+            prod.quantity = p.quantity;
+            boolean inCartons = p.inCartons;
+            prod.cartons = inCartons ? (prod.quantity / product.getcartonSize()) : 0;
+            prod.units = inCartons ? (prod.quantity % product.getcartonSize()) : prod.quantity;
             productDetails.add(prod);
             totalPrice += ((prod.cartons > MINIMUM_DISCOUNTED_CARTON_COUNT ? prod.cartons * product.getcartonSize() * prod.pricePerUnit * DISCOUNTED_PRICE :
                                                                              prod.cartons * product.getcartonSize() * prod.pricePerUnit)
