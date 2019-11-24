@@ -26,6 +26,7 @@
                   v-model="entry.inCartons"
                   value="true"
                   unchecked-value="false"
+                  switch
                  ></b-form-checkbox>
               </td>
           </tr>
@@ -68,9 +69,19 @@ export default {
     }
   },
   mounted () {
+    let currentObj = this;
     axios
       .get('http://localhost:9090/products')
-      .then(response => (this.products = response.data))
+      .then(function (response) {
+          currentObj.products = response.data
+          console.log(response)
+          if(currentObj.products.length > 0) {
+            currentObj.products.forEach(element => {
+              element.inCartons = true
+            })
+          }
+        }
+      )
   },
   methods: {
     priceChecker: function () {
