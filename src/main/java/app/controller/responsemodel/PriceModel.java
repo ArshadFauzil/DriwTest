@@ -4,5 +4,10 @@ import java.util.List;
 
 public class PriceModel {
     public List<SelectedProductDetails> selectedProduct;
-    public float totalPrice;
+    public double totalPrice;
+
+    public PriceModel(List<SelectedProductDetails> selectedProduct, double totalPrice) {
+        this.selectedProduct = selectedProduct;
+        this.totalPrice = totalPrice;
+    }
 }

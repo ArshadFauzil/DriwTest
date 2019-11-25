@@ -19,9 +19,11 @@ import java.util.Objects;
 @RequestMapping("/")
 public class PriceController {
 
+
     private final int MINIMUM_DISCOUNTED_CARTON_COUNT = 3;
-    private final double DISCOUNTED_PRICE = 0.9;
+    private final double DISCOUNTED_PRICE_PERCENTAGE = 0.9;
     private final double UNIT_PRICE_INCREMENT = 1.3;
+
     @Resource
     ProductService productService;
 
@@ -34,7 +36,7 @@ public class PriceController {
     @RequestMapping("/prices")
     @ResponseBody
     public PriceModel getPriceBreakDown(@RequestBody List<SelectedProduct> selectedProductList) {
-        if (selectedProductList.isEmpty()){
+        if (selectedProductList == null || selectedProductList.isEmpty()){
             return null;
         }
         List<Integer> pids = new ArrayList<Integer>();
@@ -53,18 +55,15 @@ public class PriceController {
                     .findAny()
                     .orElse(null));
             prod.quantity = p.quantity;
-            boolean inCartons = p.inCartons;
-            prod.cartons = inCartons ? (prod.quantity / product.getcartonSize()) : 0;
-            prod.units = inCartons ? (prod.quantity % product.getcartonSize()) : prod.quantity;
-            productDetails.add(prod);
-            prod.totalProductPrice = ((prod.cartons > MINIMUM_DISCOUNTED_CARTON_COUNT ? prod.cartons * product.getcartonSize() * prod.pricePerUnit * DISCOUNTED_PRICE :
+            prod.cartons = p.inCartons ? (prod.quantity / product.getcartonSize()) : 0;
+            prod.units = p.inCartons ? (prod.quantity % product.getcartonSize()) : prod.quantity;
+            prod.totalProductPrice = ((prod.cartons > MINIMUM_DISCOUNTED_CARTON_COUNT ? prod.cartons * product.getcartonSize() * prod.pricePerUnit * DISCOUNTED_PRICE_PERCENTAGE :
                                                                              prod.cartons * product.getcartonSize() * prod.pricePerUnit)
                         + (prod.units * prod.pricePerUnit * UNIT_PRICE_INCREMENT));
+            productDetails.add(prod);
             totalPrice += prod.totalProductPrice;
         }
-        PriceModel responseModel = new PriceModel();
-        responseModel.selectedProduct = productDetails;
-        responseModel.totalPrice = totalPrice;
+        PriceModel responseModel = new PriceModel(productDetails, totalPrice);
         return responseModel;
     }
 
