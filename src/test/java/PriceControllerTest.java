@@ -3,6 +3,7 @@ import app.controller.responsemodel.PriceModel;
 import app.controller.responsemodel.SelectedProductDetails;
 import app.dao.ProductDao;
 import app.service.ProductService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,8 +14,9 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
+
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -24,6 +26,8 @@ import java.util.List;
 @SpringBootTest
 public class PriceControllerTest {
 
+    final String baseUrl = "http://localhost:" + 9090;
+    RestTemplate restTemplate = new RestTemplate();
     @InjectMocks
     ProductService productService;
 
@@ -35,9 +39,9 @@ public class PriceControllerTest {
 
     @Test
     public void testGetPriceBreakDownNull() throws URISyntaxException {
-        RestTemplate restTemplate = new RestTemplate();
-        final String baseUrl = "http://localhost:" + 9090 + "/prices";
-        URI uri = new URI(baseUrl);
+
+        final String Url = baseUrl + "/prices";
+        URI uri = new URI(Url);
 
         /*HttpEntity<List<SelectedProduct>> request = new HttpEntity<>(null);*/
         ResponseEntity<String> result = restTemplate.postForEntity(uri, null, String.class);
@@ -49,10 +53,9 @@ public class PriceControllerTest {
 
     @Test
     public void testGetPriceBreakDownEmpty() throws URISyntaxException {
-        RestTemplate restTemplate = new RestTemplate();
 
-        final String baseUrl = "http://localhost:" + 9090 + "/prices";
-        URI uri = new URI(baseUrl);
+        final String Url = baseUrl + "/prices";
+        URI uri = new URI(Url);
 
         HttpEntity<List<SelectedProduct>> request = new HttpEntity<>(new ArrayList<>());
         ResponseEntity<String> result = restTemplate.postForEntity(uri, request, String.class);
@@ -64,9 +67,8 @@ public class PriceControllerTest {
 
     @Test
     public void testGetProducts() throws URISyntaxException {
-        RestTemplate restTemplate = new RestTemplate();
-        final String baseUrl = "http://localhost:" + 9090 + "/products";
-        URI uri = new URI(baseUrl);
+        final String Url = baseUrl + "/products";
+        URI uri = new URI(Url);
 
         ResponseEntity<String> result = restTemplate.getForEntity(uri, String.class);
 
@@ -76,7 +78,7 @@ public class PriceControllerTest {
     }
 
     @Test
-    public void testGetPriceBreakdown() throws URISyntaxException {
+    public void testGetPriceBreakdown() throws URISyntaxException, IOException {
         List<SelectedProduct> requestBody = new ArrayList<SelectedProduct>();
         requestBody.add(new SelectedProduct(0, 34, true));
         requestBody.add(new SelectedProduct(3, 20, false));
@@ -85,15 +87,14 @@ public class PriceControllerTest {
         productDetails.add(responseProduct);
         PriceModel responseModel = new PriceModel(productDetails, 334.25);
 
-        RestTemplate restTemplate = new RestTemplate();
-        final String baseUrl = "http://localhost:" + 9090 + "/prices";
-        URI uri = new URI(baseUrl);
+        final String Url = baseUrl + "/prices";
+        URI uri = new URI(Url);
 
         HttpEntity<List<SelectedProduct>> request = new HttpEntity<>(requestBody);
         ResponseEntity<String> result = restTemplate.postForEntity(uri, request, String.class);
 
         //Verify request succeed
         Assert.assertEquals(200, result.getStatusCodeValue());
-        Assert.assertEquals(true, result.getBody().contains("selectedProduct"));
+        Assert.assertEquals(responseModel, new ObjectMapper().readValue(result.getBody(), PriceModel.class));
     }
 }

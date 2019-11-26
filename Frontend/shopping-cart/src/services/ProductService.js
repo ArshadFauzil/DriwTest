@@ -1,12 +1,12 @@
 import axios from "axios";
 
-const apiUrl = "http://localhost:9090/";
+const baseURL = "http://localhost:9090/";
 
 export default {
     getAllProducts: function() {
-        return axios.get(apiUrl+"products").then((response) => response.data);
+        return axios.get(baseURL + "products").then((response) => response.data);
     },
     getPriceBreakDown: function(requestBody) {
-        return axios.post(apiUrl+"prices", requestBody).then((response) => response.data);
+        return axios.post(baseURL + "prices", requestBody).then((response) => response.data);
     }
 }
