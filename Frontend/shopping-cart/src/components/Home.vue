@@ -24,9 +24,9 @@
 </template>
 
 <script>
-import axios from 'axios';
 import Vue from 'vue'
 import VueNumericInput from 'vue-numeric-input';
+import ProductService from "../services/ProductService.js";
  
 Vue.use(VueNumericInput)
 
@@ -41,9 +41,7 @@ export default {
     }
   },
   mounted () {
-    axios
-      .get('http://localhost:9090/products')
-      .then(response => (this.products = response.data))
+    ProductService.getAllProducts().then(response => this.products = response);
   }
 }
 </script>

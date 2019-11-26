@@ -29,11 +29,11 @@
       </table>
     </div>
     <button type="button" class="btn btn-success" v-on:click="priceChecker()">Check Price</button>
-    <div v-if="response && response.data">
+    <div v-if="response">
       <h3>Your Cart</h3>
       <div class="card-wrapper d-flex flex-wrap justify-content-center">
         <div
-          v-for="(prod, j) in response.data.selectedProduct"
+          v-for="(prod, j) in response.selectedProduct"
           :key="j"
           class="card align-center"
           style="width: 18rem;"
@@ -48,16 +48,16 @@
           </div>
         </div>
       </div>
-      <h4>Total Price {{response.data.totalPrice}}</h4>
+      <h4>Total Price {{response.totalPrice}}</h4>
     </div>
     <script type="text/x-template" id="grid-template"></script>
   </div>
 </template>
 
 <script>
-import axios from "axios";
 import Vue from "vue";
 import VueNumericInput from "vue-numeric-input";
+import ProductService from "../services/ProductService.js";
 
 Vue.use(VueNumericInput);
 
@@ -78,9 +78,9 @@ export default {
     };
   },
   mounted() {
-    let currentObj = this;
-    axios.get("http://localhost:9090/products").then(function(response) {
-      currentObj.products = response.data;
+    var currentObj = this;
+    ProductService.getAllProducts().then(function(response) {
+      currentObj.products = response;
       if (currentObj.products.length > 0) {
         currentObj.products.forEach(element => {
           element.inCartons = true;
@@ -101,9 +101,7 @@ export default {
         }
       });
       if (this.selectedProducts.length > 0) {
-        axios
-          .post("http://localhost:9090/prices", this.selectedProducts)
-          .then(response => (this.response = response));
+        ProductService.getPriceBreakDown(this.selectedProducts).then(response => this.response = response);
       } else {
         this.response = null;
       }
