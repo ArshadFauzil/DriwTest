@@ -31,7 +31,7 @@
     <button type="button" class="btn btn-success" v-on:click="priceChecker()">Check Price</button>
     <div v-if="response && response.data">
       <h3>Your Cart</h3>
-      <div class="card-wrapper d-flex flex-wrap">
+      <div class="card-wrapper d-flex flex-wrap justify-content-center">
         <div
           v-for="(prod, j) in response.data.selectedProduct"
           :key="j"

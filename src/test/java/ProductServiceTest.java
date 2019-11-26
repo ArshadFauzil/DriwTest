@@ -1,4 +1,3 @@
-import app.controller.PriceController;
 import app.controller.requestmodel.SelectedProduct;
 import app.controller.responsemodel.PriceModel;
 import app.controller.responsemodel.SelectedProductDetails;
@@ -21,12 +20,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /*@ExtendWith(MockitoExtension.class)*/
-public class PriceControllerTest {
+public class ProductServiceTest {
 
     @InjectMocks
-    PriceController priceController = new PriceController();
-
-    @Mock
     ProductService productService;
 
     @Mock
@@ -34,12 +30,12 @@ public class PriceControllerTest {
 
     @Test
     public void testGetPriceBreakDownNull() {
-        Assert.assertNull(priceController.getPriceBreakDown(null));
+        Assert.assertNull(productService.getPriceBreakDown(null));
     }
 
     @Test
     public void testGetPriceBreakDownEmpty() {
-        Assert.assertNull(priceController.getPriceBreakDown(new ArrayList<>()));
+        Assert.assertNull(productService.getPriceBreakDown(new ArrayList<>()));
     }
 
     @Test
@@ -59,6 +55,6 @@ public class PriceControllerTest {
 
         /*ResponseEntity<Object> responseEntity = priceController.getPriceBreakDown(requestBody);*/
 
-        Assert.assertEquals(responseModel, priceController.getPriceBreakDown(requestBody));
+        Assert.assertEquals(responseModel, productService.getPriceBreakDown(requestBody));
     }
 }
