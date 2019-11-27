@@ -40,7 +40,7 @@ npm run serve
 http://localhost:8080/
 ```
 #### Due to the browser's security settings related to CORS, you may not view any data as the Vue JS app loads.
-#### This is because the backend requests are made from the same origin as the front end app.
+#### This is because the backend requests are made from a different origin as the front end app.
 #### To make it work install the browser extension found in https://chrome.google.com/webstore/detail/moesif-orign-cors-changer/digfbfaphojjndkpccljibejjbppifbc?hl=en-US if you're using Chrome as your browser.
 #### You can also install the same extension for the browser of your choice and turn on the extension.
 #### Once you reload the app you should be able to view the data, and use the app.

@@ -101,10 +101,11 @@ export default {
         }
       });
       if (this.selectedProducts.length > 0) {
-        ProductService.getPriceBreakDown(this.selectedProducts).then(response => this.response = response);
-      } else {
-        this.response = null;
-      }
+          this.previousSelectedProducts = this.selectedProducts;
+          ProductService.getPriceBreakDown(this.selectedProducts).then(response => this.response = response);
+        } else {
+          this.response = null;
+        }
     }
   }
 };
